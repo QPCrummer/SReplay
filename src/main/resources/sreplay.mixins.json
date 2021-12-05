@@ -10,7 +10,6 @@
     "PlayerManagerAccessor",
     "MixinThreadedAnvilChunkStorage",
     "ThreadedAnvilChunkStorageAccessor",
-    "MixinEntityTracker",
     "WorldTimeUpdateS2CPacketAccessor",
     "GameStateChangeS2CPacketAccessor"
   ],
