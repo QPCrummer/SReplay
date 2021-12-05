@@ -103,7 +103,7 @@ public class OptionManager {
         @Override
         public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
             ServerCommandSource src = context.getSource();
-            MinecraftServer server = src.getMinecraftServer();
+            MinecraftServer server = src.getServer();
             String pname = StringArgumentType.getString(context, "player");
             Photographer player = Photographer.getFake(server, pname);
             if (player != null) {
@@ -111,7 +111,7 @@ public class OptionManager {
                     try {
                         if(entry.set(context, player.getRecordingParam())) {
                             player.syncParams();
-                            server.getPlayerManager().broadcastChatMessage(render(getFormats().setParam,
+                            server.getPlayerManager().broadcast(render(getFormats().setParam,
                                 src.getName(),
                                 player.getGameProfile().getName(),
                                 entry.name,
