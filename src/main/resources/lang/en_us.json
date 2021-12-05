@@ -1,0 +1,16 @@
+{
+    "sreplay.desc": "description",
+    "sreplay.name": "name",
+    "sreplay.type": "type",
+
+    "sreplay.param.sizeLimit.desc": "The recording size is capped in MB, and -1 represents no upper limit. Recording stops automatically when the upper limit is exceeded.",
+    "sreplay.param.timeLimit.desc": "The recording time limit, in seconds, -1 means no upper limit. Recording stops automatically when the upper limit is exceeded.",
+    "sreplay.param.autoPause.desc": "Auto-pause the switch, and if true, it pauses recording when there are no players in the range of view.",
+    "sreplay.param.autoReconnect.desc": "Auto-renew switch, if true will automatically start a new round of recording after automatically stopping recording.",
+    "sreplay.param.watchDistance.desc": "Video line of sight in blocks. Increasing this value does not increase the block load range of the recording dummy, so you also need to load the block with the dummy.",
+    "sreplay.param.dayTime.desc": "The world time for locking recordings is the parameter value, and -1 means not locked. Locking the time stops the circadian cycle and improves rendering when rendering long recordings",
+    "sreplay.param.forcedWeather.desc": "Lock the weather in the video",
+    "sreplay.param.pauseMarkers.desc": "Add a marker where it is automatically paused on the timeline",
+    "sreplay.param.ignoreChat.desc": "Ignoring the chat packet reduces the recording file size",
+    "sreplay.param.ignoreItems.desc": "Ignore drops"
+}
