@@ -111,7 +111,7 @@ public class OptionManager {
                     try {
                         if(entry.set(context, player.getRecordingParam())) {
                             player.syncParams();
-                            server.getPlayerManager().broadcastChatMessage(render(getFormats().setParam,
+                            server.getPlayerManager().broadcast(render(getFormats().setParam,
                                 src.getName(),
                                 player.getGameProfile().getName(),
                                 entry.name,

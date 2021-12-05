@@ -16,7 +16,7 @@ public class MultipleOrdinalFieldInjectionPoint extends BeforeFieldAccess {
         for (String part: data.get("ordinals", "").split(",")){
             part = part.trim();
             try {
-                if (part.indexOf("..") != -1){
+                if (part.contains("..")){
                     String[] s = part.split("\\.\\.");
                     for (int i = Integer.parseInt(s[0]); i <= Integer.parseInt(s[1]); i++){
                         ordinals.add(i);
@@ -25,8 +25,7 @@ public class MultipleOrdinalFieldInjectionPoint extends BeforeFieldAccess {
                 else {
                     ordinals.add(Integer.parseInt(part));
                 }
-            } catch(NumberFormatException e){
-            }
+            } catch(NumberFormatException ignored){}
         }
     }
     

@@ -18,6 +18,7 @@ import static com.hadroncfy.sreplay.recording.Photographer.getRealViewDistance;
 public abstract class MixinThreadedAnvilChunkStorage {
     @Shadow private int watchDistance;
 
+    /*
     @Shadow
     private static int getChebyshevDistance(ChunkPos pos, ServerPlayerEntity player, boolean useCameraPosition){ return 0; }
 
@@ -28,6 +29,7 @@ public abstract class MixinThreadedAnvilChunkStorage {
     private int getWatchDistance$lambda0$getPlayersWatchingChunk(ThreadedAnvilChunkStorage cela, ChunkPos pos, boolean bl, ServerPlayerEntity player){
         return getRealViewDistance(player, watchDistance);
     }
+     */
 
     @Redirect(method = "method_17219", at = @At(
         value = "FIELD",

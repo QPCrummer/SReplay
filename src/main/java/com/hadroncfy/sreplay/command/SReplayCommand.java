@@ -116,7 +116,7 @@ public class SReplayCommand {
                 String.format("%.0f", p.getX()),
                 String.format("%.0f", p.getY()),
                 String.format("%.0f", p.getZ()),
-                p.getServerWorld().getRegistryKey().getValue().getPath()
+                p.getWorld().getRegistryKey().getValue().getPath()
             ), false);
         }
         return 0;
@@ -167,7 +167,7 @@ public class SReplayCommand {
                 return 1;
             }
             p.getRecorder().removeMarker(id);
-            src.getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().markerRemoved, ctx.getSource().getName(), name, Integer.toString(id + 1)), MessageType.CHAT, getSenderUUID(ctx));
+            src.getServer().getPlayerManager().broadcast(render(SReplayMod.getFormats().markerRemoved, ctx.getSource().getName(), name, Integer.toString(id + 1)), MessageType.CHAT, getSenderUUID(ctx));
         }
         return 0;
     }
@@ -199,7 +199,7 @@ public class SReplayCommand {
             final ChannelFuture ch = SReplayMod.getServer().bind(SReplayMod.getConfig().serverListenAddress, SReplayMod.getConfig().serverPort);
             ch.addListener(future -> {
                 if (future.isSuccess()){
-                    server.getPlayerManager().broadcastChatMessage(SReplayMod.getFormats().serverStarted, MessageType.CHAT, getSenderUUID(ctx));
+                    server.getPlayerManager().broadcast(SReplayMod.getFormats().serverStarted, MessageType.CHAT, getSenderUUID(ctx));
                 }
                 else {
                     src.sendError(render(SReplayMod.getFormats().serverStartFailed, future.cause().getMessage()));
@@ -218,7 +218,7 @@ public class SReplayCommand {
         final ChannelFuture ch = SReplayMod.getServer().stop();
         ch.addListener(future -> {
             if (future.isSuccess()){
-                server.getPlayerManager().broadcastChatMessage(SReplayMod.getFormats().serverStopped, MessageType.CHAT, getSenderUUID(ctx));
+                server.getPlayerManager().broadcast(SReplayMod.getFormats().serverStopped, MessageType.CHAT, getSenderUUID(ctx));
             }
             else {
                 src.sendError(render(SReplayMod.getFormats().serverStopFailed, future.cause().getMessage()));
@@ -276,7 +276,7 @@ public class SReplayCommand {
         if (p != null){
             String name = StringArgumentType.getString(ctx, "marker");
             p.getRecorder().addMarker(name);
-            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().markerAdded, ctx.getSource().getName(), p.getGameProfile().getName(), name), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcast(render(SReplayMod.getFormats().markerAdded, ctx.getSource().getName(), p.getGameProfile().getName(), name), MessageType.CHAT, getSenderUUID(ctx));
             return 1;
         }
         else {
@@ -288,7 +288,7 @@ public class SReplayCommand {
         Photographer p = requirePlayer(ctx);
         if (p != null){
             p.setPaused(true);
-            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().recordingPaused, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcast(render(SReplayMod.getFormats().recordingPaused, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
             return 1;
         }
         else {
@@ -300,7 +300,7 @@ public class SReplayCommand {
         Photographer p = requirePlayer(ctx);
         if (p != null){
             p.setPaused(false);
-            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().recordingResumed, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcast(render(SReplayMod.getFormats().recordingResumed, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
             return 1;
         }
         else {
@@ -358,10 +358,10 @@ public class SReplayCommand {
                 try {
                     Files.delete(rec.toPath());
                     server.getPlayerManager()
-                        .broadcastChatMessage(render(SReplayMod.getFormats().deletedRecordingFile, src.getName(), rec.getName()), MessageType.CHAT, getSenderUUID(ctx));
+                        .broadcast(render(SReplayMod.getFormats().deletedRecordingFile, src.getName(), rec.getName()), MessageType.CHAT, getSenderUUID(ctx));
                 } catch (IOException e) {
                     e.printStackTrace();
-                    server.getPlayerManager().broadcastChatMessage(render(
+                    server.getPlayerManager().broadcast(render(
                         SReplayMod.getFormats().failedToDeleteRecordingFile,
                         src.getName(),
                         rec.getName(),
@@ -389,7 +389,7 @@ public class SReplayCommand {
         if (p != null){
             Vec3d pos = ctx.getSource().getPosition();
             p.tp(ctx.getSource().getWorld().getRegistryKey(), pos.x, pos.y, pos.z);
-            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().teleportedBotToYou, p.getGameProfile().getName(), ctx.getSource().getName()), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcast(render(SReplayMod.getFormats().teleportedBotToYou, p.getGameProfile().getName(), ctx.getSource().getName()), MessageType.CHAT, getSenderUUID(ctx));
             LOGGER.info("Teleported {} to {}", p.getGameProfile().getName(), ctx.getSource().getName());
             return 1;
         }

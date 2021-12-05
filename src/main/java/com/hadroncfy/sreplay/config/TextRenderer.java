@@ -1,6 +1,7 @@
 package com.hadroncfy.sreplay.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -16,9 +17,7 @@ public class TextRenderer extends AbstractTextRenderer<TextRenderer> implements 
     private static final Pattern VAL_EXP = Pattern.compile("\\$[0-9]");
     
     public TextRenderer var(Object ...vars){
-        for (Object v: vars){
-            this.vars.add(v);
-        }
+        this.vars.addAll(Arrays.asList(vars));
         return this;
     }
 
@@ -39,7 +38,7 @@ public class TextRenderer extends AbstractTextRenderer<TextRenderer> implements 
                 return vars.get(i - 1).toString();
             }
         }
-        catch(NumberFormatException e){}
+        catch(NumberFormatException ignored){}
         return a;
     }
 
