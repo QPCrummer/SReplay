@@ -152,8 +152,9 @@ public class Photographer extends ServerPlayerEntity implements ISizeLimitExceed
             for (int z = z0 - r; z <= z0 + r; z++) {
                 ChunkPos pos1 = new ChunkPos(x, z);
                 int d = getChebyshevDistance(pos1, x0, z0);
-                acc.sendWatchPackets2(this, pos1, new Packet[2], d <= oldDistance && d > newDistance,
-                        d > oldDistance && d <= newDistance);
+                // acc.sendWatchPackets(this, pos1, d <= oldDistance && d > newDistance,
+                //         d > oldDistance && d <= newDistance);
+                acc.sendWatchPackets(this, pos1, null, d <= oldDistance && d > newDistance, d > oldDistance && d <= newDistance);
             }
         }
     }
