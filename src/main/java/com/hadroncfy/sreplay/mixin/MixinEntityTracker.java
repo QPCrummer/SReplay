@@ -22,6 +22,7 @@ public class MixinEntityTracker {
     @Shadow @Final
     private Entity entity;
 
+    /*
     @Redirect(method = "updateCameraPosition(Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At(
         value = "INVOKE",
         target = "Lnet/minecraft/server/world/ThreadedAnvilChunkStorage;method_18725(Lnet/minecraft/server/world/ThreadedAnvilChunkStorage;)I"
@@ -30,11 +31,14 @@ public class MixinEntityTracker {
         return getRealViewDistance(player, ((ThreadedAnvilChunkStorageAccessor)cela).getWatchDistance());
     }
 
+     */
+
+    /*
     @Redirect(method = "updateCameraPosition(Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At(
         value = "INVOKE",
         target = "Ljava/util/Set;add(Ljava/lang/Object;)Z"
     ))
-    private boolean onAddTrackingPlayer(Set cela, Object player){
+    private boolean onAddTrackingPlayer(Set<Object> cela, Object player){
         if (this.entity.getType() == EntityType.ITEM && player instanceof Photographer){
             Photographer p = (Photographer)player;
             if (p.isItemDisabled()){
@@ -43,4 +47,5 @@ public class MixinEntityTracker {
         }
         return cela.add(player);
     }
+     */
 }

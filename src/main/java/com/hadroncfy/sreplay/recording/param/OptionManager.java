@@ -103,7 +103,7 @@ public class OptionManager {
         @Override
         public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
             ServerCommandSource src = context.getSource();
-            MinecraftServer server = src.getMinecraftServer();
+            MinecraftServer server = src.getServer();
             String pname = StringArgumentType.getString(context, "player");
             Photographer player = Photographer.getFake(server, pname);
             if (player != null) {

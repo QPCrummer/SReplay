@@ -53,7 +53,7 @@ public class SReplayCommand {
     public static void register(CommandDispatcher<ServerCommandSource> d) {
         final LiteralArgumentBuilder<ServerCommandSource> b = literal("sreplay")
             .then(literal("player").then(argument("player", StringArgumentType.word())
-                .suggests((src, sb) -> suggestMatching(Photographer.listFakes(src.getSource().getMinecraftServer()).stream().map(p -> p.getGameProfile().getName()), sb))
+                .suggests((src, sb) -> suggestMatching(Photographer.listFakes(src.getSource().getServer()).stream().map(p -> p.getGameProfile().getName()), sb))
                 .then(literal("spawn").executes(SReplayCommand::playerSpawn))
                 .then(literal("kill").executes(SReplayCommand::playerKill))
                 .then(literal("respawn").executes(SReplayCommand::playerRespawn))
@@ -167,7 +167,7 @@ public class SReplayCommand {
                 return 1;
             }
             p.getRecorder().removeMarker(id);
-            src.getMinecraftServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().markerRemoved, ctx.getSource().getName(), name, Integer.toString(id + 1)), MessageType.CHAT, getSenderUUID(ctx));
+            src.getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().markerRemoved, ctx.getSource().getName(), name, Integer.toString(id + 1)), MessageType.CHAT, getSenderUUID(ctx));
         }
         return 0;
     }
@@ -194,7 +194,7 @@ public class SReplayCommand {
 
     private static int startServer(CommandContext<ServerCommandSource> ctx){
         final ServerCommandSource src = ctx.getSource();
-        final MinecraftServer server = src.getMinecraftServer();
+        final MinecraftServer server = src.getServer();
         try {
             final ChannelFuture ch = SReplayMod.getServer().bind(SReplayMod.getConfig().serverListenAddress, SReplayMod.getConfig().serverPort);
             ch.addListener(future -> {
@@ -214,7 +214,7 @@ public class SReplayCommand {
 
     private static int stopServer(CommandContext<ServerCommandSource> ctx){
         final ServerCommandSource src = ctx.getSource();
-        final MinecraftServer server = src.getMinecraftServer();
+        final MinecraftServer server = src.getServer();
         final ChannelFuture ch = SReplayMod.getServer().stop();
         ch.addListener(future -> {
             if (future.isSuccess()){
@@ -243,7 +243,7 @@ public class SReplayCommand {
             if (name.endsWith(MCPR)){
                 name = name.substring(0, name.length() - MCPR.length());
             }
-            if (Photographer.checkForSaveFileDupe(ctx.getSource().getMinecraftServer(), SReplayMod.getConfig().savePath, name)){
+            if (Photographer.checkForSaveFileDupe(ctx.getSource().getServer(), SReplayMod.getConfig().savePath, name)){
                 ctx.getSource().sendError(render(SReplayMod.getFormats().recordFileExists, name));
                 return 0;
             }
@@ -256,7 +256,7 @@ public class SReplayCommand {
 
     static Photographer requirePlayer(CommandContext<ServerCommandSource> ctx){
         String name = StringArgumentType.getString(ctx, "player");
-        Photographer p = SReplayMod.getFake(ctx.getSource().getMinecraftServer(), name);
+        Photographer p = SReplayMod.getFake(ctx.getSource().getServer(), name);
         if (p != null){
             return p;
         }
@@ -276,7 +276,7 @@ public class SReplayCommand {
         if (p != null){
             String name = StringArgumentType.getString(ctx, "marker");
             p.getRecorder().addMarker(name);
-            ctx.getSource().getMinecraftServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().markerAdded, ctx.getSource().getName(), p.getGameProfile().getName(), name), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().markerAdded, ctx.getSource().getName(), p.getGameProfile().getName(), name), MessageType.CHAT, getSenderUUID(ctx));
             return 1;
         }
         else {
@@ -288,7 +288,7 @@ public class SReplayCommand {
         Photographer p = requirePlayer(ctx);
         if (p != null){
             p.setPaused(true);
-            ctx.getSource().getMinecraftServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().recordingPaused, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().recordingPaused, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
             return 1;
         }
         else {
@@ -300,7 +300,7 @@ public class SReplayCommand {
         Photographer p = requirePlayer(ctx);
         if (p != null){
             p.setPaused(false);
-            ctx.getSource().getMinecraftServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().recordingResumed, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().recordingResumed, ctx.getSource().getName(), p.getGameProfile().getName()), MessageType.CHAT, getSenderUUID(ctx));
             return 1;
         }
         else {
@@ -351,7 +351,7 @@ public class SReplayCommand {
     public static int deleteRecording(CommandContext<ServerCommandSource> ctx) {
         final ServerCommandSource src = ctx.getSource();
         final File rec = new File(SReplayMod.getConfig().savePath, StringArgumentType.getString(ctx, "recording"));
-        final MinecraftServer server = src.getMinecraftServer();
+        final MinecraftServer server = src.getServer();
         if (rec.exists()) {
             src.sendFeedback(render(SReplayMod.getFormats().aboutToDeleteRecording, rec.getName()), true);
             cm.submit(src.getName(), src, () -> {
@@ -389,7 +389,7 @@ public class SReplayCommand {
         if (p != null){
             Vec3d pos = ctx.getSource().getPosition();
             p.tp(ctx.getSource().getWorld().getRegistryKey(), pos.x, pos.y, pos.z);
-            ctx.getSource().getMinecraftServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().teleportedBotToYou, p.getGameProfile().getName(), ctx.getSource().getName()), MessageType.CHAT, getSenderUUID(ctx));
+            ctx.getSource().getServer().getPlayerManager().broadcastChatMessage(render(SReplayMod.getFormats().teleportedBotToYou, p.getGameProfile().getName(), ctx.getSource().getName()), MessageType.CHAT, getSenderUUID(ctx));
             LOGGER.info("Teleported {} to {}", p.getGameProfile().getName(), ctx.getSource().getName());
             return 1;
         }
@@ -400,7 +400,7 @@ public class SReplayCommand {
     public static int playerSpawn(CommandContext<ServerCommandSource> ctx) {
         final String pName = StringArgumentType.getString(ctx, "player");
         final ServerCommandSource src = ctx.getSource();
-        final MinecraftServer server = src.getMinecraftServer();
+        final MinecraftServer server = src.getServer();
 
         Matcher m = SReplayMod.getConfig().playerNamePattern.matcher(pName);
         if (!m.matches()) {

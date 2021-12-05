@@ -72,7 +72,7 @@ public class Photographer extends ServerPlayerEntity implements ISizeLimitExceed
 
     public Photographer(MinecraftServer server, ServerWorld world, GameProfile profile,
             ServerPlayerInteractionManager im, File outputDir, RecordingOption param) {
-        super(server, world, profile, im);
+        super(server, world, profile);
         currentWatchDistance = server.getPlayerManager().getViewDistance();
         rparam = param;
         this.outputDir = outputDir;
@@ -87,7 +87,7 @@ public class Photographer extends ServerPlayerEntity implements ISizeLimitExceed
             RecordingOption param) {
         GameProfile profile = new GameProfile(PlayerEntity.getOfflinePlayerUuid(name), name);
         ServerWorld world = server.getWorld(dim);
-        ServerPlayerInteractionManager im = new ServerPlayerInteractionManager(world);
+        ServerPlayerInteractionManager im = new ServerPlayerInteractionManager(world.getRandomAlivePlayer());
         Photographer ret = new Photographer(server, world, profile, im, outputDir, param);
         ret.setPosition(pos.x, pos.y, pos.z);
         ((PlayerManagerAccessor) server.getPlayerManager()).getSaveHandler().savePlayerData(ret);
@@ -179,11 +179,11 @@ public class Photographer extends ServerPlayerEntity implements ISizeLimitExceed
         userPaused = false;
 
         setHealth(20.0F);
-        removed = false;
+        // removed = false;
         trackedPlayers.clear();
         server.getPlayerManager().onPlayerConnect(connection, this);
         syncParams();
-        interactionManager.setGameMode(MODE);// XXX: is this correct?
+        interactionManager.changeGameMode(MODE);// XXX: is this correct?
         getServerWorld().getChunkManager().updatePosition(this);
 
         int d = this.server.getPlayerManager().getViewDistance();
@@ -232,9 +232,10 @@ public class Photographer extends ServerPlayerEntity implements ISizeLimitExceed
         return entity.getClass() == ServerPlayerEntity.class;
     }
 
+    /*
     @Override
-    public void onStartedTracking(Entity entity) {
-        super.onStartedTracking(entity);
+    public void onStartedTrackingBy(Entity entity) {
+        super.onStartedTrackingBy((ServerPlayerEntity) entity);
         if (isRealPlayer(entity)) {
             trackedPlayers.add(entity);
             updatePause();
@@ -242,13 +243,14 @@ public class Photographer extends ServerPlayerEntity implements ISizeLimitExceed
     }
 
     @Override
-    public void onStoppedTracking(Entity entity) {
-        super.onStoppedTracking(entity);
+    public void onStoppedTrackingBy(Entity entity) {
+        super.onStoppedTrackingBy((ServerPlayerEntity) entity);
         if (isRealPlayer(entity)) {
             trackedPlayers.remove(entity);
             updatePause();
         }
     }
+     */
 
     private void updatePause() {
         if (!recorder.isStopped()) {
@@ -315,8 +317,11 @@ public class Photographer extends ServerPlayerEntity implements ISizeLimitExceed
     public void tp(RegistryKey<World> dim, double x, double y, double z) {
         if (!this.getServerWorld().getRegistryKey().equals(dim)) {
             ServerWorld oldMonde = server.getWorld(this.getServerWorld().getRegistryKey()), nouveau = server.getWorld(dim);
+            /*
+            assert oldMonde != null;
             oldMonde.removePlayer(this);
             removed = false;
+             */
             setWorld(nouveau);
             server.getPlayerManager().sendWorldInfo(this, nouveau);
             interactionManager.setWorld(nouveau);
